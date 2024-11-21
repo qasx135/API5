@@ -22,9 +22,22 @@ router.post('/', async (req, res) => {
     }
 });
 
+router.get('/:id', async (req, res) => {
+    try {
+        // if (!mongoose.isValidObjectId(req.params.title)) {
+        //     return res.status(400).json({ message: 'Invalid ID format' });
+        // }
+        const ctc = await Contact.findOne({ id: req.params.id });
+        if (!ctc) return res.status(404).json({ message: 'Contact not found' });
+        res.json(ctc);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 router.put('/:id', async (req, res) => {
     try {
-        const updatedContact = await Contact.findByIdAndUpdate(req.params.id, req.body, {new: true});
+        const updatedContact = await Contact.findOne({id : req.body.id});
         if (!updatedContact) return res.status(404).json({ message:'Contact not found'});
         res.json(updatedContact);
     } catch (err) {
@@ -34,7 +47,7 @@ router.put('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const deletedContact = await Contact.findByIdAndDelete(req.params.id);
+        const deletedContact = await Contact.findOne({id: req.params.id});
         if (!deletedContact) return res.status(404).json({ message: 'Contact not found' });
         res.json({ message: 'Contact deleted' });
     } catch (err) {
